@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#ff7a59" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>腹肌训练营</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="title"><span class="logo">🔥</span><span>腹肌训练营</span></div>
+      <button id="themeBtn" class="icon-btn" aria-label="切换主题">🌙</button>
+    </header>
+
+    <!-- 首页：本周概览 + 入口 -->
+    <section id="homeView" class="view">
+      <div class="hero">
+        <div class="hero-row">
+          <div><span class="hero-label">本周已完成</span><span class="hero-value" id="weekDone">0</span><span class="hero-unit">/4 天</span></div>
+          <div class="hero-ring" id="weekRing">0%</div>
+        </div>
+        <div class="hero-sub" id="todayTip">今天该练腹啦 💪</div>
+      </div>
+
+      <div class="card-grid">
+        <button class="menu-card" data-go="train">
+          <div class="mc-emoji">⏱️</div><div class="mc-title">开始训练</div><div class="mc-sub">计时器带语音提示</div>
+        </button>
+        <button class="menu-card" data-go="plan">
+          <div class="mc-emoji">📅</div><div class="mc-title">4周计划</div><div class="mc-sub">动作·时长·组数</div>
+        </button>
+        <button class="menu-card" data-go="remind">
+          <div class="mc-emoji">🔔</div><div class="mc-title">每日提醒</div><div class="mc-sub">一键导入日历</div>
+        </button>
+        <button class="menu-card" data-go="progress">
+          <div class="mc-emoji">✅</div><div class="mc-title">打卡记录</div><div class="mc-sub">自动本地保存</div>
+        </button>
+      </div>
+
+      <div class="week-bar" id="weekBar"></div>
+    </section>
+
+    <!-- 训练计时器 -->
+    <section id="trainView" class="view" hidden>
+      <button class="back-btn" data-go="home">← 返回</button>
+      <div class="timer-stage">
+        <div class="round-info">第 <span id="roundNo">1</span> / <span id="roundTotal">3</span> 轮</div>
+        <div class="exercise-name" id="exName">准备</div>
+        <div class="timer-circle">
+          <svg viewBox="0 0 200 200">
+            <circle class="ring-bg" cx="100" cy="100" r="90"></circle>
+            <circle class="ring-fg" id="ringFg" cx="100" cy="100" r="90"></circle>
+          </svg>
+          <div class="timer-num" id="timerNum">40</div>
+          <div class="timer-state" id="timerState">训练</div>
+        </div>
+        <div class="next-ex">下一个：<span id="nextEx">—</span></div>
+      </div>
+      <div class="train-actions">
+        <button id="startTrainBtn" class="btn btn-primary btn-block">▶ 开始本轮</button>
+        <button id="pauseTrainBtn" class="btn btn-ghost btn-block" hidden>⏸ 暂停</button>
+        <div class="btn-row">
+          <button id="demoTrainBtn" class="btn btn-ghost">👀 看示范</button>
+          <button id="skipBtn" class="btn btn-ghost">跳过</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 计划 -->
+    <section id="planView" class="view" hidden>
+      <button class="back-btn" data-go="home">← 返回</button>
+      <div class="plan-tabs" id="planTabs"></div>
+      <div class="plan-body" id="planBody"></div>
+    </section>
+
+    <!-- 提醒 -->
+    <section id="remindView" class="view" hidden>
+      <button class="back-btn" data-go="home">← 返回</button>
+      <div class="remind-box">
+        <div class="remind-emoji">🔔</div>
+        <h2>每周一 / 三 / 五 / 日 20:00</h2>
+        <p class="remind-sub">把训练提醒导入手机日历，到点自动弹闹钟。</p>
+        <a class="btn btn-primary btn-block" href="reminder.ics" download>📥 下载日历提醒文件</a>
+        <p class="remind-note">iOS：用「文件」App 打开 → 添加全部到日历<br/>安卓：用日历 App 打开 .ics 导入</p>
+        <hr/>
+        <p class="remind-sub">或复制下面文案，自己设 4 个每周重复闹钟：</p>
+        <div class="copy-box" id="copyBox">🧠 腹肌训练：卷腹/反向卷腹/俄罗斯转体/平板支撑，40秒做+20秒休，做3-4轮。先热身2分钟，练完拉伸1分钟！</div>
+        <button class="btn btn-ghost btn-block" id="copyBtn">复制文案</button>
+      </div>
+    </section>
+
+    <!-- 打卡 -->
+    <section id="progressView" class="view" hidden>
+      <button class="back-btn" data-go="home">← 返回</button>
+      <div class="stat-row">
+        <div class="stat-box"><span id="totalDays">0</span><small>累计训练天数</small></div>
+        <div class="stat-box"><span id="streakDays">0</span><small>连续天数</small></div>
+        <div class="stat-box"><span id="totalMins">0</span><small>累计分钟</small></div>
+      </div>
+      <h3 class="sec-title">最近打卡</h3>
+      <div class="check-list" id="checkList"></div>
+      <button class="btn btn-ghost btn-block" id="resetBtn">清空打卡记录</button>
+    </section>
+  </div>
+
+  <!-- 训练完成弹层 -->
+  <div class="modal-mask" id="doneModal" hidden>
+    <div class="modal">
+      <div class="modal-emoji">🎉</div>
+      <h2>本轮完成！</h2>
+      <p class="modal-sub" id="doneSub">今天又进步了一点</p>
+      <button id="doneHomeBtn" class="btn btn-primary btn-block">返回首页</button>
+    </div>
+  </div>
+
+  <!-- 动作教学弹层 -->
+  <div class="modal-mask" id="demoModal" hidden>
+    <div class="modal demo-modal">
+      <h2 id="demoTitle">动作教学</h2>
+      <div class="demo-svg-wrap" id="demoSvg"></div>
+      <p class="demo-tip" id="demoTip"></p>
+      <a id="demoVideo" class="btn btn-primary btn-block" target="_blank" rel="noopener">📺 看真人教学视频</a>
+      <button id="demoClose" class="btn btn-ghost btn-block">关闭</button>
+    </div>
+  </div>
+
+  <script src="demos.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
